@@ -6,6 +6,7 @@ const fetchText = async (url) => {
 };
 
 //pegando as cores dos partidos
+//infelizmente algumas cores são bem parecidas
 //fonte https://pt.wikipedia.org/wiki/Predefinição:Cor_de_partido_pol%C3%ADtico/BRA
 function getPartyColor (party) {
 
@@ -74,10 +75,10 @@ function getPartyColor (party) {
 }
 
 //usando interpolação pra plotar os círculos
-
 const width = 850;
 const height = 650;
 
+// pegando range e radius para calcular eixo x e y dos círculos
 const range = (index) => {
   if(index < 10) return [0, 10]
   if(index < 23) return [10, 23]
@@ -85,6 +86,7 @@ const range = (index) => {
   if(index < 60) return [42, 60]
   if(index < 81) return [60, 81]
 }
+
 const getRadius = (index) => {
   if(index < 10) return 150
   if(index < 23) return 190
@@ -93,8 +95,8 @@ const getRadius = (index) => {
   if(index < 81) return 310
 }
 
-//offset = -5 é giradinha gambiarra pra não ficar tão feio assim
-//não consegui estruturar direitinho pra ficar retinho
+//offset = -5 é uma translação meio gambiarra pra ficar reto do lado esquerdo
+//não consegui fazer o mesmo e estruturar direito pra ficar retinho no lado direito
 const offset = -5
 const mapRange = (value, x1, y1, x2, y2) => (value - x1) * (y2 - x2) / (y1 - x1) + x2;
 function interpolate(p0, p1, t){
@@ -118,7 +120,7 @@ const csv = "./Senadores.csv";
 fetchText(csv)
   .then((text) => {
 
-    //tratar dados
+    //tratando os dados
     csvData = d3.csvParse(text);
     return csvData;
 
@@ -130,7 +132,7 @@ fetchText(csv)
     let labelNameSenator = d3.select("h1");
     let labelParty = d3.select("h2");
 
-    //usando a função do d3 select all como visto em aula p fazer o data binding
+    //usando a função do d3 select all como visto em aula pra fazer o data binding
     let circles = d3.select("div").select("svg").selectAll("circle");
     circles
       .data(csvData)
@@ -168,6 +170,6 @@ fetchText(csv)
         .transition()
         .duration(100)
         .style('stroke', 'white')
-        .style('stroke-width', '2px');
+        .style('stroke-width', '4px');
       })
   });
